@@ -1,0 +1,27 @@
+- hosts: all
+  become: true
+  become_user: cca-user
+
+  tasks:
+    - name: Git Clone DevStack Repo
+      git: 
+        repo: https://git.openstack.org/openstack-dev/devstack
+        dest: ~/devstack
+        version: a30f89b
+
+    - name: Git Clone Workshop Repo
+      git:
+        repo: https://github.com/OUG-Toronto/workshops.git
+        dest: ~/OUG-Toronto
+
+    - name: Copying Lab config
+      copy:
+        src: /home/cca-user/OUG-Toronto/neutron-dynamic-routing-and-quagga/local.conf
+        dest: /home/cca-user/devstack/local.conf
+        mode: 0664
+        remote_src: yes
+
+    - name: Install DevStack
+      command: chdir=~/devstack ./stack.sh
+      ignore_errors: yes
+
