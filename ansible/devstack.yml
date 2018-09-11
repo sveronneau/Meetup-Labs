@@ -1,0 +1,20 @@
+- hosts: all
+  become: true
+  become_user: cca-user
+
+  tasks:
+    - name: Git Clone DevStack Repo
+      git:
+        repo: https://git.openstack.org/openstack-dev/devstack
+        dest: ~/devstack
+        version: 'stable/rocky'
+
+    - name: DevStack Local Config
+      copy:
+        src: ./local.conf
+        dest: /home/cca-user/devstack/local.conf
+        mode: 0664
+
+    - name: Install DevStack
+      command: chdir=~/devstack ./stack.sh
+      ignore_errors: yes
